@@ -69,7 +69,7 @@
       (if (websocket? channel)
         (do (println "WebSocketチャネル生成")
             (doseq [channel (keys (filter #(= room (second %)) @chat-channel-hub))]
-              (enter-notification channel id)))        
+              (enter-notification channel id)))
         (println "HTTPチャネル生成"))
       ;; データ受信時の処理
       (on-receive
