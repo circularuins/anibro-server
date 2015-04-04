@@ -66,6 +66,11 @@
       (on-receive
        channel
        (fn [data]
-         (doseq [channel (keys (filter #(= room (second %)) @chat-channel-hub))]
-           (send-data channel id data))))
+         (if (= data "h8ze@91bmkfp3")
+           (do
+             (swap! chat-channel-hub dissoc channel) ;ハブからチャネルを削除
+             (doseq [channel (keys (filter #(= room (second %)) @chat-channel-hub))]
+               (leave-notification channel id)))
+           (doseq [channel (keys (filter #(= room (second %)) @chat-channel-hub))]
+             (send-data channel id data)))))
     )))
