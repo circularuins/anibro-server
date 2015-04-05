@@ -47,6 +47,7 @@
           id (get param-seq 1)]
       ;; ハブにユーザーチャネルとルームのペアを登録する
       (swap! chat-channel-hub assoc channel room)
+      (println "start" @chat-channel-hub)
       ;; 接続解除時の処理
       (on-close
        channel
@@ -66,6 +67,7 @@
       (on-receive
        channel
        (fn [data]
+         (println "on-recieve" @chat-channel-hub)
          (if (= data "h8ze@91bmkfp3")
            (do
              (swap! chat-channel-hub dissoc channel) ;ハブからチャネルを削除
