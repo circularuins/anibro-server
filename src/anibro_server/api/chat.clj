@@ -74,5 +74,6 @@
              (doseq [channel (keys (filter #(= room (second %)) @chat-channel-hub))]
                (leave-notification channel id)))
            (doseq [channel (keys (filter #(= room (second %)) @chat-channel-hub))]
+             (println "send!!" channel)
              (send-data channel id data)))))
     )))
