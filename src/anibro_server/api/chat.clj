@@ -48,6 +48,7 @@
       ;; ハブにユーザーチャネルとルームのペアを登録する
       (swap! chat-channel-hub assoc channel room)
       (println "start" @chat-channel-hub)
+      (println "params: " (req :params))
       (println "param-seq: " param-seq "room: " (get param-seq 0) "id: " (get param-seq 1))
       ;; 接続解除時の処理
       (on-close
