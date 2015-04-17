@@ -79,3 +79,16 @@
              (println "send!!" channel)
              (send-data channel id data)))))
     )))
+
+;; チャットルームごとの人数を配信する
+(defn streaming-handler [request]
+  "WebSocketのストリーム通信を行います。あるインターバルで指定された回数、サーバーからpushします"
+  (with-channel request channel
+    (on-close channel (fn [status] (println "チャネルがクローズされました, " status)))
+    (loop [id 0]
+      (when (< id 10) ;; 10回クライアントに送ります。
+        (schedule-task 
+         (* id 200) ;; 200msごとに通信する。
+         (send! channel (str "message from server #" id) false)) ; falseはsend!の後にクローズしない
+        (recur (inc id))))
+    (schedule-task 600000 (close channel)))) ;; 600秒経ったらクローズします。
