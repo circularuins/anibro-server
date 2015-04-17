@@ -6,6 +6,10 @@
 
 (def chat-channel-hub (atom {}))
 
+(defn count-population
+  [channels]
+  (frequencies (vals @channels)))
+
 (defn send-data
   [channel id data]
   (send!
@@ -13,6 +17,16 @@
    {:status 200
     :headers {"Content-Type" "application/json; charset=utf-8"}
     :body (generate-string {:id id :data data :time (new java.util.Date)})}
+   ))
+
+(defn send-population
+  [channel populations]
+  (send!
+   channel
+   {:status 200
+    :headers {"Content-Type" "application/json; charset=utf-8"}
+    :body (generate-string {:populations populations})}
+   false ; falseはsend!の後にクローズしない
    ))
 
 (defn enter-notification
@@ -86,9 +100,9 @@
   (with-channel request channel
     (on-close channel (fn [status] (println "チャネルがクローズされました, " status)))
     (loop [id 0]
-      (when (< id 10) ;; 10回クライアントに送ります。
+      (when (< id 1000) ;; 1000回クライアントに送ります。
         (schedule-task 
          (* id 200) ;; 200msごとに通信する。
-         (send! channel (str "message from server #" id) false)) ; falseはsend!の後にクローズしない
+         (send-population channel (count-population chat-channel-hub)))
         (recur (inc id))))
     (schedule-task 600000 (close channel)))) ;; 600秒経ったらクローズします。
