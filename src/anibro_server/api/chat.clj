@@ -8,7 +8,9 @@
 
 (defn count-population
   [channels]
-  (frequencies (vals @channels)))
+  (for [m (frequencies (vals channels))
+        :let [res {}]]
+    (conj res {"roomId" (key m) "population" (val m)})))
 
 (defn send-data
   [channel id data]
