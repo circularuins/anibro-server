@@ -102,7 +102,7 @@
   (with-channel request channel
     (on-close channel (fn [status] (println "チャネルがクローズされました, " status)))
     (loop [id 0]
-      (when (< id 1000) ;; 1000回クライアントに送ります。
+      (when (< id 10) ;; 10回クライアントに送ります。
         (schedule-task 
          (* id 200) ;; 200msごとに通信する。
          (send-population channel (count-population chat-channel-hub)))
