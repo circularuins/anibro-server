@@ -105,7 +105,8 @@
       (when (< id 10000) ;; 10000回クライアントに送ります。
         (schedule-task 
          (* id 1000) ;; 1000msごとに通信する。
-         (send-population channel (count-population chat-channel-hub)))
+         (send-population channel (count-population chat-channel-hub))
+         (println "streeeeam" (count-population chat-channel-hub)))
         (recur (inc id))))
     (schedule-task 600000 (close channel)))) ;; 600秒経ったらクローズします。
 
