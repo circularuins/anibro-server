@@ -1,14 +1,14 @@
 (ns anibro-server.api.chat
   (:require [cheshire.core :refer :all]
             [org.httpkit.server :refer
-             [with-channel websocket? on-receive send! on-close close]]
+             [with-channel websocket? on-receive send! on-close close run-server]]
             [org.httpkit.timer :refer [schedule-task]]))
 
 (def chat-channel-hub (atom {}))
 
 (defn count-population
   [channels]
-  (for [m (frequencies (vals channels))
+  (for [m (frequencies (vals @channels))
         :let [res {}]]
     (conj res {"roomId" (key m) "population" (val m)})))
 
@@ -102,9 +102,22 @@
   (with-channel request channel
     (on-close channel (fn [status] (println "チャネルがクローズされました, " status)))
     (loop [id 0]
-      (when (< id 10) ;; 10回クライアントに送ります。
+      (when (< id 1000) ;; 1000回クライアントに送ります。
         (schedule-task 
          (* id 200) ;; 200msごとに通信する。
          (send-population channel (count-population chat-channel-hub)))
         (recur (inc id))))
     (schedule-task 600000 (close channel)))) ;; 600秒経ったらクローズします。
+
+
+;;; デバッグ用
+(defonce server (atom nil)) ;; 競合を避けるためatomを使う。
+(defn stop-server 
+  "msの指定時間を待ってサーバーをgracefulに停止させます。タイムアウトのオプションがなければ即時に停止させます。"
+  []
+  (when-not (nil? @server)
+    (@server :timeout 100)
+    (reset! server nil)))
+;(stop-server)
+;(reset! server (run-server #'chat-handler {:port 8080}))
+;(reset! server (run-server #'streaming-handler {:port 8081}))
