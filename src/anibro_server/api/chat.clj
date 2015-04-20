@@ -100,10 +100,17 @@
 (defn streaming-handler [request]
   "WebSocketのストリーム通信を行います。あるインターバルで指定された回数、サーバーからpushします"
   (with-channel request channel
-    (on-close channel (fn [status]
-                        (println "チャネルがクローズされました, " status)
-                        (close channel)))
+    (on-close channel (fn [status] (println "チャネルがクローズされました, " status)))
+    ;; (loop [id 0]
+    ;;   (when (< id 10000) ;; 10000回クライアントに送ります。
+    ;;     (schedule-task 
+    ;;      (* id 1000) ;; 1000msごとに通信する。
+    ;;      (send-population channel (count-population chat-channel-hub))
+    ;;      (println "streeeeam" (count-population chat-channel-hub)))
+    ;;     (recur (inc id))))
     (while true
+      (if (= data "h8ze@91bmkfp3")
+           (close channel))
       (Thread/sleep 1000)
       (send-population channel (count-population chat-channel-hub))
       (println "streeeeam" (count-population chat-channel-hub)))
