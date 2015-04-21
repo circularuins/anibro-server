@@ -109,8 +109,6 @@
     ;;      (println "streeeeam" (count-population chat-channel-hub)))
     ;;     (recur (inc id))))
     (while true
-      (if (= data "h8ze@91bmkfp3")
-           (close channel))
       (Thread/sleep 1000)
       (send-population channel (count-population chat-channel-hub))
       (println "streeeeam" (count-population chat-channel-hub)))
