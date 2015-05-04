@@ -2,7 +2,8 @@
   (:require [cheshire.core :refer :all]
             [org.httpkit.server :refer
              [with-channel websocket? on-receive send! on-close close run-server]]
-            [org.httpkit.timer :refer [schedule-task]]))
+            [org.httpkit.timer :refer [schedule-task]]
+            [clj-time.local :as tl]))
 
 (def chat-channel-hub (atom {}))
 
@@ -18,7 +19,7 @@
    channel
    {:status 200
     :headers {"Content-Type" "application/json; charset=utf-8"}
-    :body (generate-string {:id id :data data :time (new java.util.Date)})}
+    :body (generate-string {:id id :data data :time (.toString (tl/local-now))})}
    ))
 
 (defn send-population
