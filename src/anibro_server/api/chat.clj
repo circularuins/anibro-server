@@ -3,7 +3,8 @@
             [org.httpkit.server :refer
              [with-channel websocket? on-receive send! on-close close run-server]]
             [org.httpkit.timer :refer [schedule-task]]
-            [clj-time.local :as tl]))
+            [clj-time.local :as tl]
+            [anibro-server.db.article :as db]))
 
 (def chat-channel-hub (atom {}))
 
@@ -94,7 +95,8 @@
                (leave-notification channel id)))
            (doseq [channel (keys (filter #(= room (second %)) @chat-channel-hub))]
              (println "send!!" channel)
-             (send-data channel id data)))))
+             (send-data channel id data)
+             (db/add-article id data room)))))
     )))
 
 ;; チャットルームごとの人数を配信する

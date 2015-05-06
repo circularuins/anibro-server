@@ -16,6 +16,7 @@
                  [compojure "1.3.2"]
                  [http-kit "2.1.18"]
                  [cheshire "5.4.0"]
+                 [com.novemberain/monger "2.0.0"]
                  [org.clojure/clojurescript "0.0-3126"]]
   :dev-dependencies [[ring/ring-devel "1.3.2"]]
   :plugins [[lein-ring "0.9.3"]
