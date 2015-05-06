@@ -21,4 +21,4 @@
                {:user-id id
                 :text data
                 :chat-room room
-                :date (tl/local-now)})))
+                :date (.toString (tl/local-now))})))
