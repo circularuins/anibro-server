@@ -22,3 +22,9 @@
                 :text data
                 :chat-room room
                 :date (.toString (tl/local-now))})))
+
+(defn get-articles
+  [room]
+  (->> (mq/with-collection db "article"
+         (mq/find {:chat-room room})
+         (mq/sort (array-map :date 1)))))
