@@ -4,6 +4,7 @@
         [ring.middleware.content-type]
         [ring.middleware.params])
   (:require [anibro-server.api.chat :as chat]
+            [anibro-server.db.article :as article]
             [ring.adapter.jetty :as jetty]
             [compojure.route :as route]
             [compojure.handler :as handler]
@@ -14,6 +15,7 @@
 (defroutes api-routes
   (GET "/chat" req (chat/chat-handler req))
   (GET "/stream" [] chat/streaming-handler)
+  (GET "/articles" [] article/get-articles)
   (route/resources "/")
   (route/files "/demo/" {:root "demo"})
   (route/not-found "Page not found"))
