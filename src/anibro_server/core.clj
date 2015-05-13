@@ -8,14 +8,20 @@
             [ring.adapter.jetty :as jetty]
             [compojure.route :as route]
             [compojure.handler :as handler]
+            [cheshire.core :as json]
             [org.httpkit.server :refer [run-server]]
             [org.httpkit.timer :refer [schedule-task]])
   (:gen-class :main :true))
 
+(defn json-response [data & [status]]
+  {:status (or status 200)
+   :headers {"Content-Type" "application/json; charset=utf-8"}
+   :body (json/generate-string data)})
+
 (defroutes api-routes
   (GET "/chat" req (chat/chat-handler req))
   (GET "/stream" [] chat/streaming-handler)
-  (GET "/articles" [] article/get-articles)
+  (GET "/articles" req (json-response (article/get-articles req)))
   (route/resources "/")
   (route/files "/demo/" {:root "demo"})
   (route/not-found "Page not found"))

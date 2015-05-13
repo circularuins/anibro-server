@@ -12,6 +12,12 @@
            java.util.regex.Pattern
            org.bson.types.ObjectId))
 
+(defn fix-object [object]
+  (let [id (:_id object)]
+    (-> object
+        (assoc :id (str id))
+        (dissoc :_id))))
+
 (def db (mg/get-db (mg/connect) "anibro"))
 
 (defn add-article
@@ -28,4 +34,5 @@
   (let [room ((req :params) :room)]
     (->> (mq/with-collection db "article"
            (mq/find {:chat-room room})
-           (mq/sort (array-map :date 1))))))
+           (mq/sort (array-map :date 1)))
+         (map fix-object))))
