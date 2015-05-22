@@ -23,6 +23,15 @@
     :body (generate-string {:id id :data data :time (.toString (tl/local-now))})}
    ))
 
+(defn send-bytes
+  [channel data]
+  (send!
+   channel
+   {:status 200
+    :headers {"Content-Type" "application/json; charset=utf-8"}
+    :body data}
+   ))
+
 (defn send-population
   [channel populations]
   (send!
@@ -93,10 +102,17 @@
              (swap! chat-channel-hub dissoc channel) ;ハブからチャネルを削除
              (doseq [channel (keys (filter #(= room (second %)) @chat-channel-hub))]
                (leave-notification channel id)))
-           (doseq [channel (keys (filter #(= room (second %)) @chat-channel-hub))]
-             (println "send!!" channel)
-             (send-data channel id data)
-             (db/add-article id data room)))))
+           (if (= (class data) (class (.getBytes "test")))
+             (doseq [channel (keys (filter #(= room (second %)) @chat-channel-hub))]
+               (println "send!!" channel)
+               (send-bytes channel id data)
+               ;(db/add-article id data room)
+               )
+             (doseq [channel (keys (filter #(= room (second %)) @chat-channel-hub))]
+               (println "send!!" channel)
+               (send-data channel id data)
+               (db/add-article id data room)))
+           )))
     )))
 
 ;; チャットルームごとの人数を配信する
