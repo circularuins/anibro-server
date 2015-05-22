@@ -90,8 +90,8 @@
       (if (websocket? channel)
         (do (println "WebSocketチャネル生成")
             (doseq [channel (keys (filter #(= room (second %)) @chat-channel-hub))]
-              (send-bytes channel nil)
-              (send-data channel id nil)
+              (send-bytes channel "ice-break")
+              (send-data channel id "ice-break")
               (enter-notification channel id)))
         (println "HTTPチャネル生成"))
       ;; データ受信時の処理
