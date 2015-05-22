@@ -97,6 +97,7 @@
        channel
        (fn [data]
          (println "on-recieve" @chat-channel-hub)
+         (println "on-recieve bytes?? " (class data))
          (if (= data "h8ze@91bmkfp3")
            (do
              (swap! chat-channel-hub dissoc channel) ;ハブからチャネルを削除
