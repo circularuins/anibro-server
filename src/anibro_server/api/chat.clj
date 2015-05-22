@@ -106,7 +106,7 @@
            (if (= (class data) (class (.getBytes "test")))
              (doseq [channel (keys (filter #(= room (second %)) @chat-channel-hub))]
                (println "send!!" channel)
-               (send-bytes channel id data)
+               (send-bytes channel data)
                ;(db/add-article id data room)
                )
              (doseq [channel (keys (filter #(= room (second %)) @chat-channel-hub))]
